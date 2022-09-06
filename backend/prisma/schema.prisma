@@ -19,7 +19,7 @@ model User {
   sector      String
   firstAccess Boolean  @default(true)
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt()
   Call        Call[]
 
   @@map("users")
@@ -33,7 +33,7 @@ model Call {
   status     String   @default("Pendente")
   severity   Int
   createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt()
   finishedAt DateTime @default(now())
   author     User     @relation(fields: [authorId], references: [id])
   authorId   String
@@ -50,7 +50,7 @@ model Operator {
   password    String   @default("1234")
   firstAccess Boolean  @default(true)
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt()
   Call        Call[]
 
   @@map("operators")
@@ -63,7 +63,7 @@ model Admin {
   password    String
   firstAccess Boolean  @default(true)
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt()
 
   @@map("admins")
 }
