@@ -2,6 +2,8 @@ export interface CallsCreateData{
     title:string,
     message:string,
     authorId:string,
+    image?:string
+
 
 }
 
