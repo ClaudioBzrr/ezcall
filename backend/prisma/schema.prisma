@@ -31,6 +31,7 @@ model Call {
   message    String
   image      String
   status     String   @default("Pendente")
+  severity   Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now())
   finishedAt DateTime @default(now())
@@ -46,7 +47,7 @@ model Operator {
   id          String   @id @default(uuid())
   name        String
   email       String   @unique
-  password    String
+  password    String   @default("1234")
   firstAccess Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now())
