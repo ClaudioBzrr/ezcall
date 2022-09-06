@@ -6,17 +6,62 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 model User {
   id          String   @id @default(uuid())
-  email       String
+  email       String   @unique
   name        String
   password    String   @default("1234")
+  role        String
   sector      String
-  firstAccess Boolean
+  firstAccess Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now())
+  Call        Call[]
+
+  @@map("users")
+}
+
+model Call {
+  id         Int      @id @default(autoincrement())
+  title      String
+  message    String
+  status     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+  finishedAt DateTime @default(now())
+  author     User     @relation(fields: [authorId], references: [id])
+  authorId   String
+  solver     Operator @relation(fields: [solverId], references: [id])
+  solverId   String
+
+  @@map("calls")
+}
+
+model Operator {
+  id          String   @id @default(uuid())
+  name        String
+  email       String   @unique
+  password    String
+  firstAccess Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  Call        Call[]
+
+  @@map("operators")
+}
+
+model Admin {
+  id          String   @id @default(uuid())
+  name        String
+  email       String   @unique
+  password    String
+  firstAccess Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+
+  @@map("admins")
 }
