@@ -5,7 +5,7 @@ interface ListAdminUseCaseData{
     name:string,
     email:string,
     password:string,
-    firstAccess:Date,
+    firstAccess:boolean,
     createdAt:Date,
     updatedAt:Date
 }
@@ -17,7 +17,9 @@ export class ListAdminUseCase{
     ){}
 
     async execute(){
-        
+        const data = await this.adminRepository.read()
+
+        return data
     }
 
 }
