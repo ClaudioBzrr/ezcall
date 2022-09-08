@@ -14,7 +14,7 @@ model User {
   id          String   @id @default(uuid())
   email       String   @unique
   name        String
-  password    String   @default("1234")
+  password    String?  @default("1234")
   role        String
   sector      String
   firstAccess Boolean  @default(true)
@@ -47,7 +47,7 @@ model Operator {
   id          String   @id @default(uuid())
   name        String
   email       String   @unique
-  password    String   @default("1234")
+  password    String?  @default("1234")
   firstAccess Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt()
