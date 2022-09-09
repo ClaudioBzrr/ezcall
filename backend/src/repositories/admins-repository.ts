@@ -19,11 +19,11 @@ export interface AdminsDeleteData{
 export interface AdminsReadData{
     id:string,
     name:string,
-    email:string
-    password:string
-    firstAccess:boolean
-    createdAt:Date
-    updatedAt:Date
+    email:string,
+    password:string,
+    firstAccess:boolean,
+    createdAt:Date,
+    updatedAt:Date,
 }
 
 

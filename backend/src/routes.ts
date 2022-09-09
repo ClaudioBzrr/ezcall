@@ -1,5 +1,6 @@
 import express from "express";
 import { PrismaAdminsRespository } from "./repositories/prisma/PrismaAdminsRepository";
+import { EditAdminUseCase } from "./use-cases/admins/edit-admin-use-case";
 import { ListAdminUseCase } from "./use-cases/admins/list-admin-use-case";
 import { RegisterAdminUseCase } from "./use-cases/admins/register-admin-use-case";
 
@@ -12,6 +13,10 @@ const listAdminUseCase =  new ListAdminUseCase(
     prismaAdminRepository
 )
 const registerAdminUseCase =  new RegisterAdminUseCase(
+    prismaAdminRepository
+)
+
+const editAdminUseCase =  new EditAdminUseCase(
     prismaAdminRepository
 )
 
@@ -51,4 +56,23 @@ routes.post('/admin/list', async(req,res)=>{
     }
 
 
+})
+
+
+routes.post('/admin/edit',async(req, res) =>{
+
+    const {id,name,email,password} =  req.body
+    try{
+        editAdminUseCase.execute({
+            id,
+            name,
+            email,
+            password
+        })
+
+        return res.json('Usuário editado com sucesso')
+    }catch(err){
+
+        return res.status(404).json(`Erro ao editar usuário : ${err}`)
+    }
 })

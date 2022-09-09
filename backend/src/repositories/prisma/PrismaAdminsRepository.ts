@@ -13,7 +13,7 @@ export class PrismaAdminsRespository implements AdminsRepository{
                 }
             })
     }
-    async update({id,email,name,password}: AdminsUpdateData){
+    async update({id, email,name,password}: AdminsUpdateData){
         await prisma.admin.update({
             where:{
                 id
