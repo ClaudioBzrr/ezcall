@@ -14,13 +14,14 @@ model User {
   id          String   @id @default(uuid())
   email       String   @unique
   name        String
-  password    String?  @default("1234")
-  role        String
+  password    String   @default(uuid())
+  role        String   @default("user")
   sector      String
   firstAccess Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt()
-  Call        Call[]
+  author      Call[]   @relation(name: "UserAuthor")
+  solver      Call[]   @relation(name: "UserSolver")
 
   @@map("users")
 }
@@ -35,35 +36,10 @@ model Call {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt()
   finishedAt DateTime @default(now())
-  author     User     @relation(fields: [authorId], references: [id])
+  author     User     @relation(name: "UserAuthor", fields: [authorId], references: [id])
   authorId   String
-  solver     Operator @relation(fields: [solverId], references: [id])
+  solver     User     @relation(name: "UserSolver", fields: [solverId], references: [id])
   solverId   String
 
   @@map("calls")
-}
-
-model Operator {
-  id          String   @id @default(uuid())
-  name        String
-  email       String   @unique
-  password    String?  @default("1234")
-  firstAccess Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt()
-  Call        Call[]
-
-  @@map("operators")
-}
-
-model Admin {
-  id          String   @id @default(uuid())
-  name        String
-  email       String   @unique
-  password    String
-  firstAccess Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt()
-
-  @@map("admins")
 }

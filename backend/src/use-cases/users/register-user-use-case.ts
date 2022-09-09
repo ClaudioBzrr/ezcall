@@ -1,21 +1,22 @@
 import { MailAdapter } from "../../adapters/mail-adapter";
-import { AdminsRepository } from "../../repositories/admins-repository";
+import { UsersRepository } from "../../repositories/users-repository";
 
-interface RegisterAdminsUseCaseRequest{
+interface RegisterUsersUseCaseRequest{
     name:string,
     email:string,
-    password:string
+    role:string,
+    sector:string
 }
 
 
-export class RegisterAdminUseCase{
+export class RegisterUserUseCase{
     constructor(
-        private adminRepository : AdminsRepository,
+        private userRepository : UsersRepository,
         private mailAdapter: MailAdapter
     ){}
 
-    async execute(request:RegisterAdminsUseCaseRequest){
-        const {email,name,password} = request
+    async execute(request:RegisterUsersUseCaseRequest){
+        const {email,name,sector,role} = request
 
         if(!email){
             throw new Error('email is required')
@@ -23,14 +24,18 @@ export class RegisterAdminUseCase{
         if(!name){
             throw new Error('name is required')
         }
-        if(!password){
-            throw new Error('password is required')
+        if(!sector){
+            throw new Error('sector is required')
         }
+        // if(!password){
+        //     throw new Error('password is required')
+        // }
         
-        await this.adminRepository.create({
+        const pass = await this.userRepository.create({
             email,
             name,
-            password
+            sector,
+            role
         })
 
         await this.mailAdapter.sendmail({
@@ -40,7 +45,7 @@ export class RegisterAdminUseCase{
                 '<div style="font-family: sans-serif; font-size:16px; color:#111">',
                 `<p>Olá ${name}</p>`,
                 '<p>Informamos que seu novo cadastro na plataforma Ezcall foi concluído com sucesso</p>',
-                `<p> Sua senha de acesso é  : <b style="color:red">${password}</b></p>`
+                `<p> Sua senha de acesso é  : <b style="color:red"> ${pass} </b></p>`
             ].join('\n')
 
         })

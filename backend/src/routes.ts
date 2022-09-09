@@ -1,48 +1,51 @@
 import express from "express";
 import { NodemailerMailAdapter } from "./adapters/nodemailer/nodemailer-mail-adapter";
-import { PrismaAdminsRespository } from "./repositories/prisma/PrismaAdminsRepository";
-import { DeleteAdminUseCase } from "./use-cases/admins/delete-admin-use-case";
-import { EditAdminUseCase } from "./use-cases/admins/edit-admin-use-case";
-import { ListAdminUseCase } from "./use-cases/admins/list-admin-use-case";
-import { RegisterAdminUseCase } from "./use-cases/admins/register-admin-use-case";
+import { PrismaUserRepository } from "./repositories/prisma/PrismaUsersRepository";
+import { DeleteUserUseCase } from "./use-cases/users/delete-user-use-case";
+import { EditUsersUseCase } from "./use-cases/users/edit-user-use-case";
+import { ListUsersUseCase } from "./use-cases/users/list-user-use-case";
+import { RegisterUserUseCase } from "./use-cases/users/register-user-use-case";
+
 
 
 export const routes =  express.Router()
 
-const prismaAdminRepository =  new PrismaAdminsRespository()
+const prismaUserRepository =  new PrismaUserRepository()
 const nodemailerMailAdapter = new NodemailerMailAdapter()
 
-const listAdminUseCase =  new ListAdminUseCase(
-    prismaAdminRepository
+const listUserUseCase =  new ListUsersUseCase(
+    prismaUserRepository
 )
-const registerAdminUseCase =  new RegisterAdminUseCase(
-    prismaAdminRepository, nodemailerMailAdapter
-)
-
-const editAdminUseCase =  new EditAdminUseCase(
-    prismaAdminRepository
+const registerUserUseCase =  new RegisterUserUseCase(
+    prismaUserRepository, nodemailerMailAdapter
 )
 
-const deleteAdminUseCase =  new DeleteAdminUseCase(
-    prismaAdminRepository
+const editUserUseCase =  new EditUsersUseCase(
+    prismaUserRepository
 )
 
-routes.post('/admin/register', async (req,res) =>{
+const deleteUserUseCase =  new DeleteUserUseCase(
+    prismaUserRepository
+)
+
+routes.post('/user/register', async (req,res) =>{
     const {
         name,
         email,
-        password
+        sector,
+        role
     } = req.body
 
 
     try{
-        await registerAdminUseCase.execute({
+        await registerUserUseCase.execute({
             email,
             name,
-            password
+            sector,
+            role
         })
 
-        return res.json(`Administrador ${name} criado com sucesso`)
+        return res.json(`Usuário ${name} criado com sucesso`)
 
     }catch(err){
         console.log(err)
@@ -51,11 +54,11 @@ routes.post('/admin/register', async (req,res) =>{
 })
 
 
-routes.post('/admin/list', async(req,res)=>{
+routes.post('/user/list', async(req,res)=>{
 
     try{
-        const admins =  await listAdminUseCase.execute()
-        return res.json(admins)
+        const usersData =  await listUserUseCase.execute()
+        return res.json(usersData)
 
     }catch(err){
         
@@ -66,16 +69,26 @@ routes.post('/admin/list', async(req,res)=>{
 })
 
 
-routes.post('/admin/edit/:id',async(req, res) =>{
+routes.post('/users/edit/:id',async(req, res) =>{
 
-    const {name,email,password} =  req.body
+    const {
+        sector,
+        email,
+        name,
+        password,
+        role
+    } =  req.body
+
     const {id} =  req.params
+
     try{
-        editAdminUseCase.execute({
+        await editUserUseCase.execute({
             id,
-            name,
+            sector,
             email,
-            password
+            name,
+            password,
+            role
         })
 
         return res.json('Usuário editado com sucesso')
@@ -86,12 +99,12 @@ routes.post('/admin/edit/:id',async(req, res) =>{
 })
 
 
-routes.post('/admin/delete/:id',async (req,res)=>{
+routes.post('/users/delete/:id',async (req,res)=>{
     const {id} =  req.params
 
     try{
 
-        await prismaAdminRepository.delete({
+        await deleteUserUseCase.execute({
             id
         })
 
