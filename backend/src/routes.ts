@@ -1,5 +1,6 @@
 import express from "express";
 import { PrismaAdminsRespository } from "./repositories/prisma/PrismaAdminsRepository";
+import { DeleteAdminUseCase } from "./use-cases/admins/delete-admin-use-case";
 import { EditAdminUseCase } from "./use-cases/admins/edit-admin-use-case";
 import { ListAdminUseCase } from "./use-cases/admins/list-admin-use-case";
 import { RegisterAdminUseCase } from "./use-cases/admins/register-admin-use-case";
@@ -17,6 +18,10 @@ const registerAdminUseCase =  new RegisterAdminUseCase(
 )
 
 const editAdminUseCase =  new EditAdminUseCase(
+    prismaAdminRepository
+)
+
+const deleteAdminUseCase =  new DeleteAdminUseCase(
     prismaAdminRepository
 )
 
@@ -74,5 +79,22 @@ routes.post('/admin/edit',async(req, res) =>{
     }catch(err){
 
         return res.status(404).json(`Erro ao editar usuário : ${err}`)
+    }
+})
+
+
+routes.post('/admin/delete',async (req,res)=>{
+    const {id} =  req.body
+
+    try{
+
+        await prismaAdminRepository.delete(id)
+
+        return res.json('Administrador Deletado com sucesso')
+
+    }catch(err){
+
+        return  res.json('Erro ao deletar Administrador')
+
     }
 })
