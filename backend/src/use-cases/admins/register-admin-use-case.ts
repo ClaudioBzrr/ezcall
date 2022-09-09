@@ -1,3 +1,4 @@
+import { MailAdapter } from "../../adapters/mail-adapter";
 import { AdminsRepository } from "../../repositories/admins-repository";
 
 interface RegisterAdminsUseCaseRequest{
@@ -9,7 +10,8 @@ interface RegisterAdminsUseCaseRequest{
 
 export class RegisterAdminUseCase{
     constructor(
-        private adminRepository : AdminsRepository
+        private adminRepository : AdminsRepository,
+        private mailAdapter: MailAdapter
     ){}
 
     async execute(request:RegisterAdminsUseCaseRequest){
@@ -29,6 +31,18 @@ export class RegisterAdminUseCase{
             email,
             name,
             password
+        })
+
+        await this.mailAdapter.sendmail({
+            subject:"Novo cadastro",
+            recipient:email,
+            body:[
+                '<div style="font-family: sans-serif; font-size:16px; color:#111">',
+                `<p>Olá ${name}</p>`,
+                '<p>Informamos que seu novo cadastro na plataforma Ezcall foi concluído com sucesso</p>',
+                `<p> Sua senha de acesso é  : <b style="color:red">${password}</b></p>`
+            ].join('\n')
+
         })
     }
 }

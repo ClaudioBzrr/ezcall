@@ -1,4 +1,5 @@
 import express from "express";
+import { NodemailerMailAdapter } from "./adapters/nodemailer/nodemailer-mail-adapter";
 import { PrismaAdminsRespository } from "./repositories/prisma/PrismaAdminsRepository";
 import { DeleteAdminUseCase } from "./use-cases/admins/delete-admin-use-case";
 import { EditAdminUseCase } from "./use-cases/admins/edit-admin-use-case";
@@ -9,12 +10,13 @@ import { RegisterAdminUseCase } from "./use-cases/admins/register-admin-use-case
 export const routes =  express.Router()
 
 const prismaAdminRepository =  new PrismaAdminsRespository()
+const nodemailerMailAdapter = new NodemailerMailAdapter()
 
 const listAdminUseCase =  new ListAdminUseCase(
     prismaAdminRepository
 )
 const registerAdminUseCase =  new RegisterAdminUseCase(
-    prismaAdminRepository
+    prismaAdminRepository, nodemailerMailAdapter
 )
 
 const editAdminUseCase =  new EditAdminUseCase(
@@ -64,9 +66,10 @@ routes.post('/admin/list', async(req,res)=>{
 })
 
 
-routes.post('/admin/edit',async(req, res) =>{
+routes.post('/admin/edit/:id',async(req, res) =>{
 
-    const {id,name,email,password} =  req.body
+    const {name,email,password} =  req.body
+    const {id} =  req.params
     try{
         editAdminUseCase.execute({
             id,
@@ -83,12 +86,14 @@ routes.post('/admin/edit',async(req, res) =>{
 })
 
 
-routes.post('/admin/delete',async (req,res)=>{
-    const {id} =  req.body
+routes.post('/admin/delete/:id',async (req,res)=>{
+    const {id} =  req.params
 
     try{
 
-        await prismaAdminRepository.delete(id)
+        await prismaAdminRepository.delete({
+            id
+        })
 
         return res.json('Administrador Deletado com sucesso')
 
