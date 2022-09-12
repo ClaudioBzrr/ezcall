@@ -7,13 +7,21 @@ export interface CallsCreateData{
 
 
 export interface CallsUpdate{
-    severity:string,
-    status:string,
-    solverId:string
+    id:number,
+    severity?:string,
+    status?:string,
+    solverId?:string
 }
 
+
+export interface CallsId{
+    id:number
+}
 
 export interface CallsRepository{
     create:(data:CallsCreateData) =>Promise<void>
     update:(data:CallsUpdate) => Promise<void>
+    delete:(data:CallsId) => Promise<void>
 }
+
+

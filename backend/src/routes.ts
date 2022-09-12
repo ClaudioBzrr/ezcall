@@ -4,6 +4,7 @@ import { PrismaUserRepository } from "./repositories/prisma/PrismaUsersRepositor
 import { DeleteUserUseCase } from "./use-cases/users/delete-user-use-case";
 import { EditUsersUseCase } from "./use-cases/users/edit-user-use-case";
 import { ListUsersUseCase } from "./use-cases/users/list-user-use-case";
+import { LoginUserUseCase } from "./use-cases/users/login-user-use-case";
 import { RegisterUserUseCase } from "./use-cases/users/register-user-use-case";
 
 
@@ -28,7 +29,11 @@ const deleteUserUseCase =  new DeleteUserUseCase(
     prismaUserRepository
 )
 
-routes.post('/user/register', async (req,res) =>{
+const loginUserUseCase =  new LoginUserUseCase(
+    prismaUserRepository
+)
+
+routes.post('/register', async (req,res) =>{
     const {
         name,
         email,
@@ -48,8 +53,8 @@ routes.post('/user/register', async (req,res) =>{
         return res.json(`Usuário ${name} criado com sucesso`)
 
     }catch(err){
-        console.log(err)
-        return res.status(404).json(err)
+
+        return res.status(404).json(`Error ao criar usuário : ${err}`)
     }
 })
 
@@ -69,7 +74,7 @@ routes.post('/user/list', async(req,res)=>{
 })
 
 
-routes.post('/users/edit/:id',async(req, res) =>{
+routes.put('/user/:id',async(req, res) =>{
 
     const {
         sector,
@@ -99,7 +104,7 @@ routes.post('/users/edit/:id',async(req, res) =>{
 })
 
 
-routes.post('/users/delete/:id',async (req,res)=>{
+routes.delete('/user/:id',async (req,res)=>{
     const {id} =  req.params
 
     try{
@@ -108,11 +113,30 @@ routes.post('/users/delete/:id',async (req,res)=>{
             id
         })
 
-        return res.json('Administrador Deletado com sucesso')
+        return res.json('Usuário deletado com sucesso')
 
     }catch(err){
 
-        return  res.json('Erro ao deletar Administrador')
+        return  res.status(404).json('Erro ao deletar usuário')
 
+    }
+})
+
+
+routes.post('/user/login',async (req, res) =>{
+
+        const {email, password} = req.body
+
+        
+    try{
+
+        const id = await loginUserUseCase.execute({
+            email,
+            password
+        })
+
+        return res.json(id)
+    }catch(err){
+        return res.status(404).json(`Erro ao fazer login : ${String(err).replace("Error: ","")}`)
     }
 })

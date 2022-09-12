@@ -73,17 +73,34 @@ export class PrismaUserRepository implements UsersRepository{
     };
 
     async login({email,password}: UsersLoginData):Promise<UsersID>{
-        const logger =  await prisma.user.findUniqueOrThrow({
+
+
+        
+        const logUser =  await prisma.user.findUniqueOrThrow({
             where:{
-                email
+                email:email
             },
             select:{
-                id:true
+                id:true,
+                email:true,
+                password:true
             }
-        
+        }).catch(() =>{
+            throw new Error('Usuário não cadastrado')
         })
 
-        return logger
+
+        const {id} = logUser
+
+        if(logUser.email == email && logUser.password == password){
+
+            return {id}
+
+        }else{
+            throw new Error('Usuário inválido')
+        }
+
+        
     }
 
 }

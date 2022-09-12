@@ -27,9 +27,6 @@ export class RegisterUserUseCase{
         if(!sector){
             throw new Error('sector is required')
         }
-        // if(!password){
-        //     throw new Error('password is required')
-        // }
         
         const pass = await this.userRepository.create({
             email,
