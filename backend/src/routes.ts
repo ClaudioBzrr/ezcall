@@ -35,6 +35,7 @@ const loginUserUseCase =  new LoginUserUseCase(
 
 routes.post('/register', async (req,res) =>{
     const {
+        id,
         name,
         email,
         sector,
@@ -42,20 +43,22 @@ routes.post('/register', async (req,res) =>{
     } = req.body
 
 
-    try{
-        await registerUserUseCase.execute({
-            email,
-            name,
-            sector,
-            role
-        })
+        try{
+            await registerUserUseCase.execute({
+                id,
+                email,
+                name,
+                sector,
+                role
+            })
+    
+            return res.json(`Usuário ${name} criado com sucesso`)
+    
+        }catch(err){
+    
+            return res.status(404).json(`Error ao criar usuário : ${String(err).replace("Error: ","")}`)
+        }
 
-        return res.json(`Usuário ${name} criado com sucesso`)
-
-    }catch(err){
-
-        return res.status(404).json(`Error ao criar usuário : ${err}`)
-    }
 })
 
 

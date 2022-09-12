@@ -2,6 +2,7 @@ import { MailAdapter } from "../../adapters/mail-adapter";
 import { UsersRepository } from "../../repositories/users-repository";
 
 interface RegisterUsersUseCaseRequest{
+    id?:string,
     name:string,
     email:string,
     role:string,
@@ -16,7 +17,7 @@ export class RegisterUserUseCase{
     ){}
 
     async execute(request:RegisterUsersUseCaseRequest){
-        const {email,name,sector,role} = request
+        const {id,email,name,sector,role} = request
 
         if(!email){
             throw new Error('email is required')
@@ -29,6 +30,7 @@ export class RegisterUserUseCase{
         }
         
         const pass = await this.userRepository.create({
+            id,
             email,
             name,
             sector,
