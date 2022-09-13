@@ -1,4 +1,4 @@
-import { UsersRepository } from "../../repositories/users-repository";
+import { UsersID, UsersRepository } from "../../repositories/users-repository";
 
 
 interface LoginUserUseCaseData{
@@ -14,7 +14,7 @@ export class LoginUserUseCase{
         private usersRepository:UsersRepository
     ){}
 
-    async execute(request:LoginUserUseCaseData){
+    async execute(request:LoginUserUseCaseData):Promise<UsersID>{
 
         const {
             email,

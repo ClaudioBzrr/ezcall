@@ -4,6 +4,7 @@ import {
     UsersCreateData,
     UsersID,
     UsersLoginData,
+    UsersDeleteData,
     UsersReadData,
     UsersRepository,
     UsersUpdateData
@@ -12,7 +13,7 @@ import {
 
 export class PrismaUserRepository implements UsersRepository{
 
-    async create({ id, email, name, sector, role }: UsersCreateData): Promise<string> {
+    async create({ auth, email, name, sector, role }: UsersCreateData): Promise<string> {
 
         const adminCount = await prisma.user.count({
             where: {
@@ -20,10 +21,10 @@ export class PrismaUserRepository implements UsersRepository{
             }
         })
 
-        if (adminCount > 0 && id) {
+        if (adminCount > 0 && auth) {
             const idRole = await prisma.user.findUniqueOrThrow({
                 where: {
-                    id
+                    id:auth
                 },
                 select: {
                     role: true
@@ -36,7 +37,7 @@ export class PrismaUserRepository implements UsersRepository{
 
         }
 
-        if(adminCount >0 && !id){
+        if(adminCount >0 && !auth){
             throw new Error('Usuário não autorizado a fazer cadastros')
         }
 
@@ -62,7 +63,21 @@ export class PrismaUserRepository implements UsersRepository{
 
         return password
     }
-    async update({id, email,name,password}: UsersUpdateData){
+    async update({auth, id, email,name,password,sector,role}: UsersUpdateData){
+
+        const authRole = await prisma.user.findUniqueOrThrow({
+            where:{
+                id:auth
+            },
+            select:{
+                role:true
+            }
+        })
+
+        if(authRole.role != 'admin'){
+            throw new Error('Usuário não autorizado a editar informações.')
+        }
+
         await prisma.user.update({
             where:{
                 id
@@ -70,7 +85,9 @@ export class PrismaUserRepository implements UsersRepository{
             data:{
                 name,
                 email,
-                password
+                password,
+                role,
+                sector
             }
         })
     };
@@ -92,7 +109,21 @@ export class PrismaUserRepository implements UsersRepository{
 
     }
 
-    async delete({id}: UsersID){
+    async delete({auth,id}: UsersDeleteData){
+
+        const authRole = await prisma.user.findUniqueOrThrow({
+            where:{
+                id:auth
+            },
+            select:{
+                role:true
+            }
+        })
+
+        if(authRole.role != 'admin'){
+            throw new Error('Usuário não autorizado a deletar informações.')
+        }
+
         await prisma.user.delete({
             where:{
                 id

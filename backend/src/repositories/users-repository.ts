@@ -1,6 +1,6 @@
 
 export interface UsersCreateData{
-    id?:string,
+    auth?:string,
     name:string,
     email:string,
     role ?:string,
@@ -8,6 +8,7 @@ export interface UsersCreateData{
 }
 
 export interface UsersUpdateData{
+    auth:string,
     id:string,
     name ?: string,
     email ?: string,
@@ -18,6 +19,7 @@ export interface UsersUpdateData{
 
 
 export interface UsersDeleteData{
+    auth:string,
     id:string
 }
 
@@ -48,7 +50,7 @@ export interface UsersRepository{
     update:(data:UsersUpdateData) => Promise<void>
     readOne:(data:UsersID) => Promise<UsersReadData>
     readAll:() => Promise<UsersReadData[]>
-    delete:(data:UsersID) => Promise<void>
+    delete:(data:UsersDeleteData) => Promise<void>
     login:(data:UsersLoginData) => Promise<UsersID>
 }
 

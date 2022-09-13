@@ -1,6 +1,7 @@
 import { UsersRepository } from '../../repositories/users-repository'
 
 interface EditUsersUseCaseData{
+    auth:string,
     id:string,
     name ?: string,
     email ?: string,
@@ -15,8 +16,9 @@ export class EditUsersUseCase{
         private usersRepository:UsersRepository
     ){}
 
-    async execute({id,sector,email,name,password,role}:EditUsersUseCaseData){
+    async execute({auth,id,sector,email,name,password,role}:EditUsersUseCaseData){
         await this.usersRepository.update({
+            auth,
             id,
             sector,
             email,

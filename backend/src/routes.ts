@@ -35,7 +35,7 @@ const loginUserUseCase =  new LoginUserUseCase(
 
 routes.post('/register', async (req,res) =>{
     const {
-        id,
+        auth,
         name,
         email,
         sector,
@@ -45,7 +45,7 @@ routes.post('/register', async (req,res) =>{
 
         try{
             await registerUserUseCase.execute({
-                id,
+                auth,
                 email,
                 name,
                 sector,
@@ -80,6 +80,7 @@ routes.post('/user/list', async(req,res)=>{
 routes.put('/user/:id',async(req, res) =>{
 
     const {
+        auth,
         sector,
         email,
         name,
@@ -91,6 +92,7 @@ routes.put('/user/:id',async(req, res) =>{
 
     try{
         await editUserUseCase.execute({
+            auth,
             id,
             sector,
             email,
@@ -102,18 +104,20 @@ routes.put('/user/:id',async(req, res) =>{
         return res.json('Usuário editado com sucesso')
     }catch(err){
 
-        return res.status(404).json(`Erro ao editar usuário : ${err}`)
+        return res.status(404).json(`Erro ao editar usuário : ${String(err).replace("Error: ","")}`)
     }
 })
 
 
 routes.delete('/user/:id',async (req,res)=>{
-    const {id} =  req.params
+    const {id} = req.params
+    const {auth} =  req.body
 
     try{
 
         await deleteUserUseCase.execute({
-            id
+            id,
+            auth
         })
 
         return res.json('Usuário deletado com sucesso')

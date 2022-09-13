@@ -1,6 +1,7 @@
 import { UsersRepository } from '../../repositories/users-repository'
 
 interface DeleteUserUseCaseData{
+    auth:string,
     id:string
 }
 
@@ -9,8 +10,9 @@ export class DeleteUserUseCase{
         private userRespository:UsersRepository
     ){}
 
-    async execute({id}:DeleteUserUseCaseData){
+    async execute({auth,id}:DeleteUserUseCaseData){
         await this.userRespository.delete({
+            auth,
             id
         })
     }

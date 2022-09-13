@@ -6,7 +6,8 @@ export interface CallsCreateData{
 }
 
 
-export interface CallsUpdate{
+export interface CallsUpdateData{
+    auth:string,
     id:number,
     severity?:string,
     status?:string,
@@ -14,14 +15,14 @@ export interface CallsUpdate{
 }
 
 
-export interface CallsId{
+export interface CallsDeleteData{
     id:number
 }
 
 export interface CallsRepository{
     create:(data:CallsCreateData) =>Promise<void>
-    update:(data:CallsUpdate) => Promise<void>
-    delete:(data:CallsId) => Promise<void>
+    update:(data:CallsUpdateData) => Promise<void>
+    delete:(data:CallsDeleteData) => Promise<void>
 }
 
 
