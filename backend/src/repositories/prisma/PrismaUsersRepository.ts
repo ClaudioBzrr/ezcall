@@ -1,4 +1,3 @@
-import { User } from '@prisma/client'
 import {prisma} from '../../prisma'
 import { 
     UsersCreateData,
@@ -92,13 +91,17 @@ export class PrismaUserRepository implements UsersRepository{
         })
     };
 
-    async readAll():Promise<User[]>{
-        const allUsers =  await prisma.user.findMany()
+    async readAll():Promise<UsersReadData[]>{
+        const allUsers =  await prisma.user.findMany({
+            where:{
+                role:'user'
+            }
+        })
 
         return allUsers
     }
 
-    async readOne({id}: UsersID):Promise<User>{
+    async readOne({id}: UsersID):Promise<UsersReadData>{
         const user = await prisma.user.findUniqueOrThrow({
             where:{
                 id

@@ -30,16 +30,16 @@ model Call {
   id         Int      @id @default(autoincrement())
   title      String
   message    String
-  image      String
+  image      String?
   status     String   @default("Pendente")
-  severity   Int
+  severity   Int?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt()
   finishedAt DateTime @default(now())
   author     User     @relation(name: "UserAuthor", fields: [authorId], references: [id])
   authorId   String
-  solver     User     @relation(name: "UserSolver", fields: [solverId], references: [id])
-  solverId   String
+  solver     User?     @relation(name: "UserSolver", fields: [solverId], references: [id])
+  solverId   String?
 
   @@map("calls")
 }
