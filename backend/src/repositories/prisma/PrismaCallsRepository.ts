@@ -15,7 +15,7 @@ import {
 
 export class PrismaCallsRepository implements CallsRepository{
 
-    async create({image,authorId,message,title}: CallsCreateData):Promise<void>{
+    async create({screenshot,authorId,message,title}: CallsCreateData):Promise<void>{
 
         await prisma.call.create({
 
@@ -23,7 +23,7 @@ export class PrismaCallsRepository implements CallsRepository{
                 message,
                 title,
                 authorId,
-                image
+                screenshot
             }
         })
     }

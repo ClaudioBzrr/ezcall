@@ -2,7 +2,7 @@ export interface CallsCreateData{
     title:string,
     message:string,
     authorId:string,
-    image:string
+    screenshot:string
 }
 
 
@@ -32,7 +32,7 @@ export interface CallsOperatorData{
     id:number,
     title:string,
     message:string,
-    image:string | null,
+    screenshot:string | null,
     status:string,
     severity:number|null,
     createdAt:Date,
@@ -46,7 +46,7 @@ export interface CallsUserData{
     id:number,
     title:string,
     message:string,
-    image:string|null,
+    screenshot:string|null,
     status:string,
     createdAt:Date,
     updatedAt:Date,
