@@ -1,7 +1,7 @@
 import { UsersRepository } from '../../repositories/users-repository'
 
 interface EditUsersUseCaseData{
-    auth:string,
+    auth?:string,
     id:string,
     name ?: string,
     email ?: string,
@@ -17,6 +17,11 @@ export class EditUsersUseCase{
     ){}
 
     async execute({auth,id,sector,email,name,password,role}:EditUsersUseCaseData){
+
+        if(!auth){
+            throw new Error('Usuário Não credenciado')
+        }
+
         await this.usersRepository.update({
             auth,
             id,

@@ -8,7 +8,7 @@ export interface UsersCreateData{
 }
 
 export interface UsersUpdateData{
-    auth:string,
+    auth?:string,
     id:string,
     name ?: string,
     email ?: string,
@@ -19,7 +19,7 @@ export interface UsersUpdateData{
 
 
 export interface UsersDeleteData{
-    auth:string,
+    auth?:string,
     id:string
 }
 

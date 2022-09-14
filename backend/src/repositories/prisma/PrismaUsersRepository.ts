@@ -64,6 +64,7 @@ export class PrismaUserRepository implements UsersRepository{
     }
     async update({auth, id, email,name,password,sector,role}: UsersUpdateData){
 
+
         const authRole = await prisma.user.findUniqueOrThrow({
             where:{
                 id:auth
@@ -72,10 +73,11 @@ export class PrismaUserRepository implements UsersRepository{
                 role:true
             }
         })
-
+    
         if(authRole.role != 'admin'){
             throw new Error('Usuário não autorizado a editar informações.')
         }
+
 
         await prisma.user.update({
             where:{
