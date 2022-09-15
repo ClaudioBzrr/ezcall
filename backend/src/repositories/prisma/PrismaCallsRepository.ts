@@ -30,7 +30,7 @@ export class PrismaCallsRepository implements CallsRepository{
 
     async update({auth,id,severity,solverId,status}: CallsUpdateData):Promise<void>{
         
-        const creator =  await prisma.call.findUniqueOrThrow({
+        const creator =  await prisma.call.findUnique({
             where:{
                 id
             },
@@ -39,8 +39,25 @@ export class PrismaCallsRepository implements CallsRepository{
             }
         })
 
-        if(auth != creator.solverId){
-            throw new Error('Usuário não autorizado a fazer alterações em chamados')
+        if(creator){
+
+            if(auth != creator.solverId){
+                throw new Error('Usuário não autorizado a fazer alterações em chamados')
+            }
+        }else{
+            const op =  await prisma.user.findUniqueOrThrow({
+                where:{
+                    id:auth
+                },
+                select:{
+                    role:true
+                }
+            })
+
+            if(op.role !='operator'){
+                
+                throw new Error('Usuário não é um operador')
+            }
         }
 
         await prisma.call.update({

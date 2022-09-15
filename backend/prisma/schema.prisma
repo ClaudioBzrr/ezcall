@@ -27,19 +27,20 @@ model User {
 }
 
 model Call {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   title      String
   message    String
   screenshot String?
-  status     String   @default("Pendente")
+  status     String    @default("Pendente")
   severity   Int?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt()
-  finishedAt DateTime @default(now())
-  author     User     @relation(name: "UserAuthor", fields: [authorId], references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt()
+  finishedAt DateTime?
+  author     User      @relation(name: "UserAuthor", fields: [authorId], references: [id])
   authorId   String
-  solver     User?    @relation(name: "UserSolver", fields: [solverId], references: [id])
+  solver     User?     @relation(name: "UserSolver", fields: [solverId], references: [id])
   solverId   String?
+  isFinished Boolean   @default(false)
 
   @@map("calls")
 }

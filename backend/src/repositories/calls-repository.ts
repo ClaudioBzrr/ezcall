@@ -37,9 +37,10 @@ export interface CallsOperatorData{
     severity:number|null,
     createdAt:Date,
     updatedAt:Date,
-    finishedAt:Date,
+    finishedAt:Date|null,
     authorId:string,
     solverId:string|null
+    isFinished:boolean
 }
 
 export interface CallsUserData{
@@ -50,9 +51,10 @@ export interface CallsUserData{
     status:string,
     createdAt:Date,
     updatedAt:Date,
-    finishedAt:Date,
+    finishedAt:Date|null,
     authorId:string,
     solverId:string|null
+    isFinished:boolean
 }
 
 export interface CallsRepository{
