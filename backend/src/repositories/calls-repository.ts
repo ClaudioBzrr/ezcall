@@ -12,6 +12,8 @@ export interface CallsUpdateData{
     severity?:number,
     status?:string,
     solverId?:string
+    isFinished?:boolean
+    solution?:string
 }
 
 

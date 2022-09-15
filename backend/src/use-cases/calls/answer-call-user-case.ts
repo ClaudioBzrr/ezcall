@@ -2,11 +2,13 @@ import { CallsRepository } from "../../repositories/calls-repository";
 
 
 interface AnswerCallUseCaseData{
-    auth:string,
+    auth?:string,
     id:number,
     severity?:number,
     status?:string,
-    solverId?:string
+    solverId?:string,
+    isFinished?:boolean,
+    solution?:string
 }
 
 
@@ -21,20 +23,30 @@ export class AnswerCallUseCase{
             id,
             severity,
             solverId,
-            status
+            status,
+            isFinished,
+            solution
         } = request
 
         if(!auth){
             throw new Error('Usuário não autorizado')
         }
-
+    
         if(!id){
             throw new Error('Registro não encontrado')
         }
+
         
-        if(!status){
-            throw new Error('Status não informado')
-        }
+
+        await this.callsRepository.update({
+            auth,
+            id,
+            severity,
+            solverId,
+            status,
+            isFinished,
+            solution
+        })
 
     }
 }

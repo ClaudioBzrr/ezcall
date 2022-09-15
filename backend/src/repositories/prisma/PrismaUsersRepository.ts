@@ -62,7 +62,7 @@ export class PrismaUserRepository implements UsersRepository{
 
         return password
     }
-    async update({auth, id, email,name,password,sector,role}: UsersUpdateData){
+    async update({auth, id, email,name,password,sector}: UsersUpdateData){
 
 
         const authRole = await prisma.user.findUniqueOrThrow({
@@ -72,6 +72,8 @@ export class PrismaUserRepository implements UsersRepository{
             select:{
                 role:true
             }
+        }).catch(() =>{
+            throw new Error('Usuário invalido')
         })
     
         if(authRole.role != 'admin'){
@@ -87,7 +89,6 @@ export class PrismaUserRepository implements UsersRepository{
                 name,
                 email,
                 password,
-                role,
                 sector
             }
         })
@@ -98,6 +99,8 @@ export class PrismaUserRepository implements UsersRepository{
             where:{
                 role:'user'
             }
+        }).catch(() =>{
+            throw new Error("Usuário inválido")
         })
 
         return allUsers
@@ -123,6 +126,8 @@ export class PrismaUserRepository implements UsersRepository{
             select:{
                 role:true
             }
+        }).catch(() =>{
+            throw new Error("Usuário inválido")
         })
 
         if(authRole.role != 'admin'){

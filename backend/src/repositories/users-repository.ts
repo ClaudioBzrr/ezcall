@@ -12,8 +12,7 @@ export interface UsersUpdateData{
     id:string,
     name ?: string,
     email ?: string,
-    role ?:string,
-    sector: string,
+    sector?: string,
     password ?: string
 }
 

@@ -3,7 +3,7 @@ import 'dotenv/config'
 import { routes } from './routes' 
 
 const server =  express()
-const port = process.env.SERVER_PORT
+const port = process.env.SERVER_PORT || process.env.PORT
 
 server.use(express.json())
 server.use(routes)

@@ -99,8 +99,7 @@ usersRoutes.put('/user/:id',async(req, res) =>{
             sector,
             email,
             name,
-            password,
-            role
+            password
         })
 
         return res.json('Usuário editado com sucesso')

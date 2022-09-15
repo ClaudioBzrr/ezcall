@@ -5,8 +5,7 @@ interface EditUsersUseCaseData{
     id:string,
     name ?: string,
     email ?: string,
-    role ?:string,
-    sector: string,
+    sector?: string,
     password ?: string
 }
 
@@ -16,7 +15,7 @@ export class EditUsersUseCase{
         private usersRepository:UsersRepository
     ){}
 
-    async execute({auth,id,sector,email,name,password,role}:EditUsersUseCaseData){
+    async execute({auth,id,sector,email,name,password}:EditUsersUseCaseData){
 
         if(!auth){
             throw new Error('Usuário Não credenciado')
@@ -28,8 +27,7 @@ export class EditUsersUseCase{
             sector,
             email,
             name,
-            password,
-            role
+            password
 
         })
     }

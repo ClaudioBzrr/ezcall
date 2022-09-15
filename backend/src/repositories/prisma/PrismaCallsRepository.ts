@@ -28,7 +28,7 @@ export class PrismaCallsRepository implements CallsRepository{
         })
     }
 
-    async update({auth,id,severity,solverId,status}: CallsUpdateData):Promise<void>{
+    async update({auth,id,severity,solverId,status,isFinished,solution}: CallsUpdateData):Promise<void>{
         
         const creator =  await prisma.call.findUnique({
             where:{
@@ -38,6 +38,19 @@ export class PrismaCallsRepository implements CallsRepository{
                 solverId:true
             }
         })
+
+        const callStatus =  await prisma.call.findFirstOrThrow({
+            where:{
+                id
+            },
+            select:{
+                isFinished:true
+            }
+        })
+
+        if(callStatus.isFinished == true){
+            throw new Error('Impossível editar um chamado finalizado')
+        }
 
         if(creator){
 
@@ -68,7 +81,9 @@ export class PrismaCallsRepository implements CallsRepository{
             data:{
                 severity,
                 solverId,
-                status
+                status,
+                isFinished,
+                solution
             }
         })
 

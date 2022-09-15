@@ -36,6 +36,7 @@ model Call {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt()
   finishedAt DateTime?
+  solution   String?
   author     User      @relation(name: "UserAuthor", fields: [authorId], references: [id])
   authorId   String
   solver     User?     @relation(name: "UserSolver", fields: [solverId], references: [id])
