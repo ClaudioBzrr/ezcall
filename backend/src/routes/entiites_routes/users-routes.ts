@@ -1,15 +1,15 @@
 import express from "express";
-import { NodemailerMailAdapter } from "./adapters/nodemailer/nodemailer-mail-adapter";
-import { PrismaUserRepository } from "./repositories/prisma/PrismaUsersRepository";
-import { DeleteUserUseCase } from "./use-cases/users/delete-user-use-case";
-import { EditUsersUseCase } from "./use-cases/users/edit-user-use-case";
-import { ListUsersUseCase } from "./use-cases/users/list-user-use-case";
-import { LoginUserUseCase } from "./use-cases/users/login-user-use-case";
-import { RegisterUserUseCase } from "./use-cases/users/register-user-use-case";
+import { NodemailerMailAdapter } from "../../adapters/nodemailer/nodemailer-mail-adapter"; 
+import { PrismaUserRepository } from "../../repositories/prisma/PrismaUsersRepository"; 
+import { DeleteUserUseCase } from "../../use-cases/users/delete-user-use-case"; 
+import { EditUsersUseCase } from "../../use-cases/users/edit-user-use-case"; 
+import { ListUsersUseCase } from "../../use-cases/users/list-user-use-case"; 
+import { LoginUserUseCase } from "../../use-cases/users/login-user-use-case"; 
+import { RegisterUserUseCase } from "../../use-cases/users/register-user-use-case"; 
 
 
 
-export const routes =  express.Router()
+export const usersRoutes =  express.Router()
 
 const prismaUserRepository =  new PrismaUserRepository()
 const nodemailerMailAdapter = new NodemailerMailAdapter()
@@ -33,7 +33,7 @@ const loginUserUseCase =  new LoginUserUseCase(
     prismaUserRepository
 )
 
-routes.post('/register', async (req,res) =>{
+usersRoutes.post('/register', async (req,res) =>{
     const {
         name,
         email,
@@ -63,7 +63,7 @@ routes.post('/register', async (req,res) =>{
 })
 
 
-routes.post('/user/list', async(req,res)=>{
+usersRoutes.post('/user/list', async(req,res)=>{
 
     try{
         const usersData =  await listUserUseCase.execute()
@@ -78,7 +78,7 @@ routes.post('/user/list', async(req,res)=>{
 })
 
 
-routes.put('/user/:id',async(req, res) =>{
+usersRoutes.put('/user/:id',async(req, res) =>{
 
     const {
         sector,
@@ -111,7 +111,7 @@ routes.put('/user/:id',async(req, res) =>{
 })
 
 
-routes.delete('/user/:id',async (req,res)=>{
+usersRoutes.delete('/user/:id',async (req,res)=>{
     const {id} = req.params
     const auth =  req.headers.authorization
 
@@ -132,7 +132,7 @@ routes.delete('/user/:id',async (req,res)=>{
 })
 
 
-routes.post('/user/login',async (req, res) =>{
+usersRoutes.post('/user/login',async (req, res) =>{
 
         const {email, password} = req.body
 
