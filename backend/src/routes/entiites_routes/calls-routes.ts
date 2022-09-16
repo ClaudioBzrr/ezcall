@@ -5,6 +5,7 @@ import { DeleteCallUseCase } from '../../use-cases/calls/delete-call-use-case'
 import { AnswerCallUseCase } from '../../use-cases/calls/answer-call-user-case' 
 import { UserCallsUseCase } from '../../use-cases/calls/user-calls-use-case'
 import { OperatorCallsUseCase } from '../../use-cases/calls/operator-calls-use-case'
+import { AllCallsUseCase } from '../../use-cases/calls/all-calls-use-case'
 
 export const callRoutes = Router()
 
@@ -28,6 +29,10 @@ const userCalls = new UserCallsUseCase(
 )
 
 const operatorCalls = new OperatorCallsUseCase(
+    prismaCallsRepository
+)
+
+const allCallsUseCase =  new AllCallsUseCase(
     prismaCallsRepository
 )
 
@@ -138,6 +143,23 @@ callRoutes.post('/user/calls', async(req,res)=>{
 
     }catch(err){
         return res.status(403).json(`Erro : ${String(err).replace("Error: ","")}`)
+    }
+})
+
+
+callRoutes.post('/allcalls',async(req,res)=>{
+    const solverId =  req.headers.authorization
+
+    try{
+        const data =  await allCallsUseCase.execute({
+            solverId
+        })
+
+        return res.json(data)
+    }catch(err){
+
+        return res.status(403).json(`Erro : ${String(err).replace("Error: ","")}`)
+
     }
 })
 
