@@ -2,7 +2,7 @@ import { CallsRepository } from "../../repositories/calls-repository";
 
 
 interface DeleteCallUseCaseData{
-    auth:string,
+    auth?:string,
     id:number
 }
 

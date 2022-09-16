@@ -3,7 +3,7 @@ import { CallsRepository } from "../../repositories/calls-repository";
 interface CreateCallUseCaseData{
     title:string,
     message:string,
-    authorId:string,
+    authorId?:string,
     screenshot:string
 }
 

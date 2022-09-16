@@ -17,6 +17,21 @@ export class PrismaCallsRepository implements CallsRepository{
 
     async create({screenshot,authorId,message,title}: CallsCreateData):Promise<void>{
 
+        const authRole =  await prisma.user.findUniqueOrThrow({
+            where:{
+                id:authorId
+            },
+            select:{
+                role:true
+            }
+        }).catch(() =>{
+            throw new Error("Usuário inválido")
+        })
+
+
+        if(authRole.role != 'user'){
+            throw new Error('Usuário não autorizado a criar chamados')
+        }
         await prisma.call.create({
 
             data:{
@@ -115,6 +130,25 @@ export class PrismaCallsRepository implements CallsRepository{
 
      async readUserCalls({authorId}: CallsAuthorData):Promise<CallsUserData[]>{
 
+        const authAuthorId =  await prisma.user.findUniqueOrThrow({
+            where:{
+                id:authorId
+            },
+            select:{
+                role:true
+            }
+        }).catch(()=>{
+
+            throw new Error('Credenciais inválidas')
+
+        })
+
+        
+
+        if(authAuthorId.role != 'user'){
+            throw new Error('Credenciais inválidas')
+        }
+
         const data = await prisma.call.findMany({
             where:{
                 authorId
@@ -126,7 +160,25 @@ export class PrismaCallsRepository implements CallsRepository{
 
      }
 
-     async readOperatorCall({solverId}: CallsSolverData):Promise<CallsOperatorData[]>{
+     async readOperatorCalls({solverId}: CallsSolverData):Promise<CallsOperatorData[]>{
+
+        const authSolverId =  await prisma.user.findUniqueOrThrow({
+            where:{
+                id:solverId
+            },
+            select:{
+                role:true
+            }
+        }).catch(()=>{
+
+            throw new Error('Credenciais inválidas')
+
+        })
+
+        if(authSolverId.role != 'operator'){
+            throw new Error('Credenciais inválidas')
+        }
+
         const data = await prisma.call.findMany({
             where:{
                 solverId
@@ -134,5 +186,26 @@ export class PrismaCallsRepository implements CallsRepository{
         })
 
         return data
+     }
+
+     async readAllcalls({solverId}: CallsSolverData):Promise<CallsOperatorData[]>{
+
+        const roleSolverId = await prisma.user.findUniqueOrThrow({
+            where:{
+                id:solverId
+            },
+            select:{
+                role:true
+            }
+        })
+
+        if(roleSolverId.role !='operator' && roleSolverId.role !='admin'){
+            throw new Error('Credenciais Inválidas')
+        }
+
+        const data = await prisma.call.findMany()
+
+        return data
+
      }
 }

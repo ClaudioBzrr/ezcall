@@ -11,8 +11,8 @@ export interface CallsUpdateData{
     id:number,
     severity?:number,
     status?:string,
-    solverId?:string
-    isFinished?:boolean
+    solverId?:string,
+    isFinished?:boolean,
     solution?:string
 }
 
@@ -64,7 +64,8 @@ export interface CallsRepository{
     update:(data:CallsUpdateData) => Promise<void>
     delete:(data:CallsDeleteData) => Promise<void>
     readUserCalls:(data:CallsAuthorData) => Promise<CallsUserData[]>
-    readOperatorCall:(data:CallsSolverData) => Promise<CallsOperatorData[]>
+    readOperatorCalls:(data:CallsSolverData) => Promise<CallsOperatorData[]>
+    readAllcalls:(data:CallsSolverData) => Promise<CallsOperatorData[]>
 }
 
 
