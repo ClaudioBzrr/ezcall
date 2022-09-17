@@ -45,12 +45,17 @@ export class PrismaCallsRepository implements CallsRepository{
 
     async update({auth,id,severity,solverId,status,isFinished,solution}: CallsUpdateData):Promise<void>{
         
-        const creator =  await prisma.call.findUnique({
+        const creator =  await prisma.call.findUniqueOrThrow({
             where:{
                 id
             },
-            select:{
-                solverId:true
+            include:{
+                solver:{
+                    select:{
+                        id:true,
+                        role:true
+                    }
+                }
             }
         })
 
@@ -67,10 +72,18 @@ export class PrismaCallsRepository implements CallsRepository{
             throw new Error('Impossível editar um chamado finalizado')
         }
 
-        if(creator){
+        if(creator.solver){
 
-            if(auth != creator.solverId){
-                throw new Error('Usuário não autorizado a fazer alterações em chamados')
+            if(creator.solverId){
+
+                if(creator.solver.role !='operator'){
+                    throw new Error('Usuário não é um operador')
+                }
+
+                if(auth != creator.solverId){
+                    throw new Error('Usuário não autorizado a fazer alterações nesse chamado')
+                }
+
             }
         }else{
             const op =  await prisma.user.findUniqueOrThrow({
@@ -95,7 +108,7 @@ export class PrismaCallsRepository implements CallsRepository{
             },
             data:{
                 severity,
-                solverId,
+                solverId:auth,
                 status,
                 isFinished,
                 solution
