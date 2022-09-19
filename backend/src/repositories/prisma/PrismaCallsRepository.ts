@@ -43,7 +43,7 @@ export class PrismaCallsRepository implements CallsRepository{
         })
     }
 
-    async update({auth,id,severity,solverId,status,isFinished,solution}: CallsUpdateData):Promise<void>{
+    async update({id,severity,solverId,status,isFinished,solution,finishedAt}: CallsUpdateData):Promise<void>{
         
         const creator =  await prisma.call.findUniqueOrThrow({
             where:{
@@ -80,7 +80,7 @@ export class PrismaCallsRepository implements CallsRepository{
                     throw new Error('Usuário não é um operador')
                 }
 
-                if(auth != creator.solverId){
+                if(solverId != creator.solverId){
                     throw new Error('Usuário não autorizado a fazer alterações nesse chamado')
                 }
 
@@ -88,7 +88,7 @@ export class PrismaCallsRepository implements CallsRepository{
         }else{
             const op =  await prisma.user.findUniqueOrThrow({
                 where:{
-                    id:auth
+                    id:solverId
                 },
                 select:{
                     role:true
@@ -108,10 +108,11 @@ export class PrismaCallsRepository implements CallsRepository{
             },
             data:{
                 severity,
-                solverId:auth,
+                solverId:solverId,
                 status,
                 isFinished,
-                solution
+                solution,
+                finishedAt
             }
         })
 
@@ -124,9 +125,12 @@ export class PrismaCallsRepository implements CallsRepository{
                 id
             },
             select:{
+                isFinished:true,
                 solverId:true
             }
         })
+
+        
 
         if(auth != creator.solverId){
             throw new Error('Usuário não autorizado a deletar chamados')

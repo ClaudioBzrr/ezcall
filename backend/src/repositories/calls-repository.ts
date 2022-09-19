@@ -7,13 +7,13 @@ export interface CallsCreateData{
 
 
 export interface CallsUpdateData{
-    auth:string,
     id:number,
     severity?:number,
     status?:string,
     solverId?:string,
     isFinished?:boolean,
-    solution?:string
+    solution?:string,
+    finishedAt?:Date
 }
 
 

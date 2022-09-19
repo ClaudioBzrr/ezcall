@@ -6,6 +6,7 @@ import { AnswerCallUseCase } from '../../use-cases/calls/answer-call-user-case'
 import { UserCallsUseCase } from '../../use-cases/calls/user-calls-use-case'
 import { OperatorCallsUseCase } from '../../use-cases/calls/operator-calls-use-case'
 import { AllCallsUseCase } from '../../use-cases/calls/all-calls-use-case'
+import { FinishCallsUseCase } from '../../use-cases/calls/finish-calls-use-case'
 
 export const callRoutes = Router()
 
@@ -21,6 +22,10 @@ const deleteCall =  new DeleteCallUseCase(
 )
 
 const answerCall =  new AnswerCallUseCase(
+    prismaCallsRepository
+)
+
+const finishCall =  new FinishCallsUseCase(
     prismaCallsRepository
 )
 
@@ -64,33 +69,45 @@ callRoutes.post('/call/create',async (req,res) =>{
 
 
 callRoutes.put('/call/:id',async (req,res) =>{
-    const id = Number(req.params.id)
-    const {
-        severity,
-        status,
-        solverId,
-        isFinished,
-        solution
-    } = req.body
 
-    const auth = req.headers.authorization
+    const id = Number(req.params.id)
+    const {severity} = req.body
+    const solverId = req.headers.authorization
 
     try{
 
         await answerCall.execute({
-            auth,
             id,
-            isFinished,
             severity,
-            solution,
             solverId,
-            status
         })
 
         return  res.json('Chamado atualizado com sucesso!')
 
     }catch(err){
         return  res.status(403).json(`Erro ao editar chamado : ${String(err).replace("Error: ","")}`)
+    }
+})
+
+
+callRoutes.put('/finish/call/:id', async(req,res) =>{
+    const id =  Number(req.params.id)
+    const solverId =  req.headers.authorization
+    const { solution } = req.body
+
+    try{
+
+        await finishCall.execute({
+            id,
+            solution,
+            solverId
+        })
+
+
+        return res.json("Chamado finalizado com sucesso")
+
+    }catch(err){
+        return res.json(`Erro : ${String(err).replace("Error: ","")}`)
     }
 })
 

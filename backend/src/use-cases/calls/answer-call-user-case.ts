@@ -2,13 +2,9 @@ import { CallsRepository } from "../../repositories/calls-repository";
 
 
 interface AnswerCallUseCaseData{
-    auth?:string,
     id:number,
     severity?:number,
-    status?:string,
     solverId?:string,
-    isFinished?:boolean,
-    solution?:string
 }
 
 
@@ -19,16 +15,12 @@ export class AnswerCallUseCase{
 
     async execute(request:AnswerCallUseCaseData){
         const {
-            auth,
             id,
             severity,
             solverId,
-            status,
-            isFinished,
-            solution
         } = request
 
-        if(!auth){
+        if(!solverId){
             throw new Error('Usuário não autorizado')
         }
     
@@ -37,15 +29,11 @@ export class AnswerCallUseCase{
         }
 
         
-
         await this.callsRepository.update({
-            auth,
             id,
             severity,
             solverId,
-            status,
-            isFinished,
-            solution
+            status:"Em andamento",
         })
 
     }
