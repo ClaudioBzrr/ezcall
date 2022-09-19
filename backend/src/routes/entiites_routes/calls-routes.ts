@@ -122,10 +122,10 @@ callRoutes.delete('/call/:id',async (req,res) =>{
             auth
         })
 
-        return res.json('Usuário deletado com sucesso')
+        return res.json('Chamado deletado com sucesso')
     }catch(err){
 
-        return res.status(403).json(`Erro ao deletar usuário : ${String(err).replace('Error: ','')}`)
+        return res.status(403).json(`Erro ao deletar chamado : ${String(err).replace('Error: ','')}`)
     }
 })
 
