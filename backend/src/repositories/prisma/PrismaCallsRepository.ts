@@ -120,38 +120,22 @@ export class PrismaCallsRepository implements CallsRepository{
 
     async delete({auth,id}: CallsDeleteData):Promise<void>{
 
-        const callData =  await prisma.call.findUniqueOrThrow({
-            where:{
-                id
-            },
-            select:{
-                isFinished:true,
-                authorId:true
-            }
-        })
-
-        
-        const authRole =  await prisma.user.findUniqueOrThrow({
+        const {role} =  await prisma.user.findUniqueOrThrow({
             where:{
                 id:auth
             },
             select:{
                 role:true
             }
-        }).catch(()=>{
-            throw new Error("Usuário inválido")
+        }).catch(() =>{
+            throw new Error('Credenciais inválidas')
         })
 
+        if(role != 'admin'){
+            
+            throw new Error('Usuário sem permissão para deletar chamados')
 
-
-        if(callData.isFinished==true && authRole.role !='admin'){
-            throw new Error('Usuário não autorizado a deletar chamados finalizados')
         }
-
-        if(auth != callData.authorId && authRole.role !='admin'){
-            throw new Error('Usuário não autorizado a deletar chamados')
-        }
-
 
         await prisma.call.delete({
             where:{

@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { callRoutes } from './entiites_routes/calls-routes'
-import { usersRoutes } from './entiites_routes/users-routes'
+import { callRoutes } from './entities/calls-routes'
+import { usersRoutes } from './entities/users-routes'
 
 
 export const routes =  Router()
