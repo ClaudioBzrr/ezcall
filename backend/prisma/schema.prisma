@@ -22,6 +22,7 @@ model User {
   updatedAt   DateTime @updatedAt()
   author      Call[]   @relation(name: "UserAuthor")
   solver      Call[]   @relation(name: "UserSolver")
+  isActive    Boolean  @default(true)
 
   @@map("users")
 }
