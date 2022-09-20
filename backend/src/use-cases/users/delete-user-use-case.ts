@@ -15,9 +15,10 @@ export class DeleteUserUseCase{
         if(!auth){
             throw new Error('Usuário não credenciado')
         }
-        await this.userRespository.delete({
+        await this.userRespository.update({
             auth,
-            id
+            id,
+            isActive:false
         })
     }
 }

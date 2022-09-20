@@ -3,7 +3,6 @@ import {
     UsersCreateData,
     UsersID,
     UsersLoginData,
-    UsersDeleteData,
     UsersReadData,
     UsersRepository,
     UsersUpdateData
@@ -26,10 +25,14 @@ export class PrismaUserRepository implements UsersRepository{
                     id:auth
                 },
                 select: {
-                    role: true
+                    role: true,
+                    isActive:true
                 }
             })
 
+            if(idRole.isActive == false){
+                throw new Error('Usuário inativo')
+            }
             if (idRole.role != 'admin') {
                 throw new Error('Usuário não autorizado a fazer cadastros')
             }
@@ -62,7 +65,7 @@ export class PrismaUserRepository implements UsersRepository{
 
         return password
     }
-    async update({auth, id, email,name,password,sector}: UsersUpdateData){
+    async update({auth, id, email,name,password,sector, isActive}: UsersUpdateData){
 
 
         const authRole = await prisma.user.findUniqueOrThrow({
@@ -70,11 +73,16 @@ export class PrismaUserRepository implements UsersRepository{
                 id:auth
             },
             select:{
-                role:true
+                role:true,
+                isActive:true
             }
         }).catch(() =>{
             throw new Error('Usuário invalido')
         })
+
+        if(authRole.isActive == false){
+            throw new Error('Usuário inativo.')
+        }
     
         if(authRole.role != 'admin'){
             throw new Error('Usuário não autorizado a editar informações.')
@@ -89,19 +97,14 @@ export class PrismaUserRepository implements UsersRepository{
                 name,
                 email,
                 password,
-                sector
+                sector,
+                isActive
             }
         })
     };
 
     async readAll():Promise<UsersReadData[]>{
-        const allUsers =  await prisma.user.findMany({
-            where:{
-                role:'user'
-            }
-        }).catch(() =>{
-            throw new Error("Usuário inválido")
-        })
+        const allUsers =  await prisma.user.findMany()
 
         return allUsers
     }
@@ -117,30 +120,6 @@ export class PrismaUserRepository implements UsersRepository{
 
     }
 
-    async delete({auth,id}: UsersDeleteData){
-
-        const authRole = await prisma.user.findUniqueOrThrow({
-            where:{
-                id:auth
-            },
-            select:{
-                role:true
-            }
-        }).catch(() =>{
-            throw new Error("Usuário inválido")
-        })
-
-        if(authRole.role != 'admin'){
-            throw new Error('Usuário não autorizado a deletar informações.')
-        }
-
-        await prisma.user.delete({
-            where:{
-                id
-            }
-        })
-    };
-
     async login({email,password}: UsersLoginData):Promise<UsersID>{
 
 
@@ -152,13 +131,16 @@ export class PrismaUserRepository implements UsersRepository{
             select:{
                 id:true,
                 email:true,
-                password:true
+                password:true,
+                isActive:true
             }
         }).catch(() =>{
             throw new Error('Usuário não cadastrado')
         })
 
-
+        if(logUser.isActive ==false){
+            throw new Error("Usuário inativo")
+        }
         const {id} = logUser
 
         if(logUser.email == email && logUser.password == password){

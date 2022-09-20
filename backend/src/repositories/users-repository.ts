@@ -14,13 +14,10 @@ export interface UsersUpdateData{
     email ?: string,
     sector?: string,
     password ?: string
+    isActive ?: boolean
 }
 
 
-export interface UsersDeleteData{
-    auth?:string,
-    id:string
-}
 
 export interface UsersReadData{
     id: string;
@@ -32,6 +29,7 @@ export interface UsersReadData{
     firstAccess: boolean;
     createdAt: Date;
     updatedAt: Date;
+    isActive: boolean
 }
 
 export interface UsersID{
@@ -49,7 +47,6 @@ export interface UsersRepository{
     update:(data:UsersUpdateData) => Promise<void>
     readOne:(data:UsersID) => Promise<UsersReadData>
     readAll:() => Promise<UsersReadData[]>
-    delete:(data:UsersDeleteData) => Promise<void>
     login:(data:UsersLoginData) => Promise<UsersID>
 }
 

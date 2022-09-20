@@ -22,13 +22,17 @@ export class PrismaCallsRepository implements CallsRepository{
                 id:authorId
             },
             select:{
-                role:true
+                role:true,
+                isActive:true
             }
         }).catch(() =>{
             throw new Error("Usuário inválido")
         })
 
+        if(authRole.isActive == false){
 
+            throw new Error("Usuário inativo")
+        }
         if(authRole.role != 'user'){
             throw new Error('Usuário não autorizado a criar chamados')
         }
@@ -53,7 +57,8 @@ export class PrismaCallsRepository implements CallsRepository{
                 solver:{
                     select:{
                         id:true,
-                        role:true
+                        role:true,
+                        isActive:true
                     }
                 }
             }
@@ -75,6 +80,10 @@ export class PrismaCallsRepository implements CallsRepository{
         if(creator.solver){
 
             if(creator.solverId){
+
+                if(creator.solver.isActive == false){
+                    throw new Error('Usuário inativo')
+                }
 
                 if(creator.solver.role !='operator'){
                     throw new Error('Usuário não é um operador')
@@ -120,22 +129,28 @@ export class PrismaCallsRepository implements CallsRepository{
 
     async delete({auth,id}: CallsDeleteData):Promise<void>{
 
-        const {role} =  await prisma.user.findUniqueOrThrow({
+        const {role,isActive} =  await prisma.user.findUniqueOrThrow({
             where:{
                 id:auth
             },
             select:{
-                role:true
+                role:true,
+                isActive:true
             }
         }).catch(() =>{
             throw new Error('Credenciais inválidas')
         })
+
+        if(isActive == true){
+            throw new Error('Usuário inativo')
+        }
 
         if(role != 'admin'){
             
             throw new Error('Usuário sem permissão para deletar chamados')
 
         }
+
 
         await prisma.call.delete({
             where:{
@@ -152,7 +167,8 @@ export class PrismaCallsRepository implements CallsRepository{
                 id:authorId
             },
             select:{
-                role:true
+                role:true,
+                isActive:true
             }
         }).catch(()=>{
 
@@ -160,7 +176,9 @@ export class PrismaCallsRepository implements CallsRepository{
 
         })
 
-        
+        if(authAuthorId.isActive == false){
+            throw new Error("Usuário inativo")
+        }
 
         if(authAuthorId.role != 'user'){
             throw new Error('Credenciais inválidas')
@@ -209,13 +227,18 @@ export class PrismaCallsRepository implements CallsRepository{
                 id:solverId
             },
             select:{
-                role:true
+                role:true,
+                isActive:true
             }
         }).catch(()=>{
 
             throw new Error('Credenciais inválidas')
 
         })
+
+        if(authSolverId.isActive == false){
+            throw new Error('Usuário inativo')
+        }
 
         if(authSolverId.role != 'operator'){
             throw new Error('Credenciais inválidas')
@@ -249,9 +272,14 @@ export class PrismaCallsRepository implements CallsRepository{
                 id:solverId
             },
             select:{
-                role:true
+                role:true,
+                isActive:true
             }
         })
+
+        if(roleSolverId.isActive == false){
+            throw new Error('Usuário inativo')
+        }
 
         if(roleSolverId.role !='operator' && roleSolverId.role !='admin'){
             throw new Error('Credenciais Inválidas')
