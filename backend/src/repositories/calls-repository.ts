@@ -41,7 +41,9 @@ export interface CallsOperatorData{
     updatedAt:Date,
     finishedAt:Date|null,
     authorId:string,
-    solverId:string|null
+    author:{name:string},
+    solverId:string|null,
+    solver:{name:string}|null
     isFinished:boolean
 }
 
@@ -55,7 +57,8 @@ export interface CallsUserData{
     updatedAt:Date,
     finishedAt:Date|null,
     authorId:string,
-    solverId:string|null
+    author:{name:string},
+    solver:{name:string}|null,
     isFinished:boolean
 }
 

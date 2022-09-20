@@ -169,6 +169,31 @@ export class PrismaCallsRepository implements CallsRepository{
         const data = await prisma.call.findMany({
             where:{
                 authorId
+            },
+            select:{
+                id:true,
+                title:true,
+                message:true,
+                screenshot:true,
+                status:true,
+                createdAt:true,
+                updatedAt:true,
+                finishedAt:true,
+                authorId:true,
+                solverId:false,
+                isFinished:true,
+                severity:false,
+                solution:false,
+                solver:{
+                    select:{
+                        name:true
+                    }
+                },
+                author:{
+                    select:{
+                        name:true
+                    }
+                }
             }
         })
 
@@ -199,6 +224,18 @@ export class PrismaCallsRepository implements CallsRepository{
         const data = await prisma.call.findMany({
             where:{
                 solverId
+            },
+            include:{
+                author:{
+                    select:{
+                        name:true
+                    }
+                },
+                solver:{
+                    select:{
+                        name:true
+                    }
+                }
             }
         })
 
@@ -220,7 +257,20 @@ export class PrismaCallsRepository implements CallsRepository{
             throw new Error('Credenciais Inválidas')
         }
 
-        const data = await prisma.call.findMany()
+        const data = await prisma.call.findMany({
+            include:{
+                solver:{
+                    select:{
+                        name:true
+                    }
+                },
+                author:{
+                    select:{
+                        name:true
+                    }
+                }
+            }
+        })
 
         return data
 
