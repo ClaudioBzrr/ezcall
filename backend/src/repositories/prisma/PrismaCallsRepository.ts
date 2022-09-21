@@ -58,9 +58,17 @@ export class PrismaCallsRepository implements CallsRepository{
                     select:{
                         id:true,
                         role:true,
-                        isActive:true
                     }
                 }
+            }
+        })
+
+        const {isActive} = await prisma.user.findUniqueOrThrow({
+            where:{
+                id:solverId
+            },
+            select:{
+                isActive:true
             }
         })
 
@@ -77,13 +85,13 @@ export class PrismaCallsRepository implements CallsRepository{
             throw new Error('Impossível editar um chamado finalizado')
         }
 
+        if(isActive == false){
+            throw new Error('Usuário inativo')
+        }
+
         if(creator.solver){
 
             if(creator.solverId){
-
-                if(creator.solver.isActive == false){
-                    throw new Error('Usuário inativo')
-                }
 
                 if(creator.solver.role !='operator'){
                     throw new Error('Usuário não é um operador')
