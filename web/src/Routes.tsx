@@ -1,4 +1,7 @@
-import { Home } from "./pages/admin/Home"
+import { Detail } from "./pages/Detail"
+import { Error } from "./pages/Error"
+import { Home } from "./pages/Home"
+import { Login } from "./pages/Login"
 
 interface RoutesProps{
     path:string,
@@ -7,11 +10,23 @@ interface RoutesProps{
 
 export const routes:RoutesProps[] = [
     {
+        path:'/login',
+        element:<Login/>
+    },
+    {
         path:'/',
         element:<Home/>
     },
     {
         path:'/home',
         element:<Home/>
-    }
+    },
+    {
+        path:'/details',
+        element:<Detail/>
+    },
+    {
+        path:'*',
+        element:<Error/>
+    },
 ]
