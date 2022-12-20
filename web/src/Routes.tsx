@@ -15,7 +15,7 @@ export const routes:RoutesProps[] = [
     },
     {
         path:'/',
-        element:<Home/>
+        element:<Login/>
     },
     {
         path:'/home',

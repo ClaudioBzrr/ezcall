@@ -15,6 +15,9 @@ module.exports = {
       ligthGray:'#8d8d88',
     },
     extend: {
+      animation:{
+        'spin-fast':'spin 0.5s linear infinite'
+      }
     },
   },
   plugins: [],
